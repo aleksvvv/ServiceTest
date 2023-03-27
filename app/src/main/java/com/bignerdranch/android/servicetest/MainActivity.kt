@@ -7,6 +7,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.bignerdranch.android.servicetest.databinding.ActivityMainBinding
 
 
@@ -20,10 +21,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.simpleService.setOnClickListener {
-            startService(MyService.newIntent(this))
+            stopService(MyForegroundService.newIntent(this))
+//            startService(MyService.newIntent(this))
         }
         binding.foregroundService.setOnClickListener {
-            showNotification()
+            ContextCompat.startForegroundService(this,MyForegroundService.newIntent(this))
         }
     }
 
@@ -31,23 +33,22 @@ class MainActivity : AppCompatActivity() {
         val notificationManager =
             getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
                 ID_CHANNEL,
                 NAME_CHANNEL,
                 NotificationManager.IMPORTANCE_DEFAULT
             )
-            notificationManager.createNotificationChannel(notificationChannel)
+             notificationManager.createNotificationChannel(notificationChannel)
         }
 
         val notification = NotificationCompat.Builder(this, ID_CHANNEL)
-            .setContentTitle("Title")
-            .setContentText("Text")
+            .setContentTitle("title")
+            .setContentText("text")
             .setSmallIcon(R.drawable.ic_launcher_background)
             .build()
 
-
-        notificationManager.notify(1, notification)
+    notificationManager.notify(1, notification)
 
     }
 

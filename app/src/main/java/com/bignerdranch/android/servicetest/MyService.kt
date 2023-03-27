@@ -20,6 +20,7 @@ coroutine.launch {
             for (i in 0..100) {
                 delay(1000)
             log(i.toString())
+                stopSelf()
         }
 }
 
@@ -38,7 +39,7 @@ return START_STICKY
     }
 
     private fun log(message: String) {
-        Log.d("MyService", "MyService: $message")
+        Log.d("Service_TAG", "MyService: $message")
     }
 
     companion object {
