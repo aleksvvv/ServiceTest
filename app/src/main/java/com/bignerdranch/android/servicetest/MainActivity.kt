@@ -1,15 +1,12 @@
 package com.bignerdranch.android.servicetest
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
+import android.app.job.JobWorkItem
 import android.content.ComponentName
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.core.app.NotificationCompat
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bignerdranch.android.servicetest.databinding.ActivityMainBinding
 
@@ -18,6 +15,7 @@ class MainActivity : AppCompatActivity() {
     private val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
+    private var page = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,38 +32,21 @@ class MainActivity : AppCompatActivity() {
             startService(MyIntentService.newIntent(this))
         }
         binding.jobScheduler.setOnClickListener {
-            val componentName = ComponentName(this,MyJobService::class.java)
 
-            val jobInfo = JobInfo.Builder(MyJobService.ID_JOB, componentName)
+           val componentName = ComponentName(this, MyJobService::class.java)
+            val jobInfo = JobInfo.Builder(MyJobService.ID_JOB,componentName)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                .setRequiresCharging(true)
                 .build()
 
             val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
-            jobScheduler.schedule(jobInfo)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val jobWorkItem = JobWorkItem(MyJobService.newIntent(page++))
+
+                jobScheduler.enqueue(jobInfo,jobWorkItem)
+            }
+
         }
-    }
-
-    private fun showNotification() {
-        val notificationManager =
-            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-
-         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationChannel = NotificationChannel(
-                ID_CHANNEL,
-                NAME_CHANNEL,
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-             notificationManager.createNotificationChannel(notificationChannel)
-        }
-
-        val notification = NotificationCompat.Builder(this, ID_CHANNEL)
-            .setContentTitle("title")
-            .setContentText("text")
-            .setSmallIcon(R.drawable.ic_launcher_background)
-            .build()
-
-    notificationManager.notify(1, notification)
-
     }
 
     companion object {
