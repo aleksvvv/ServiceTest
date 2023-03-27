@@ -22,9 +22,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".MyService"></service>
-        <service android:name=".MyForegroundService"></service>
-        <service android:name=".MyIntentService"></service>
+        <service android:name=".MyService"/>
+        <service android:name=".MyForegroundService"/>
+        <service android:name=".MyIntentService" />
+        <service android:name=".MyJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+           />
     </application>
 
 </manifest>
