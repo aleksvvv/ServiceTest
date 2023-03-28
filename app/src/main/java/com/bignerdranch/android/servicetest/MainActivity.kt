@@ -42,12 +42,13 @@ class MainActivity : AppCompatActivity() {
             val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val jobWorkItem = JobWorkItem(MyJobService.newIntent(page++))
-
                 jobScheduler.enqueue(jobInfo,jobWorkItem)
             } else{
                 startService(MyIntentService2.newIntent(this,page++))
             }
-
+        }
+        binding.jobIntentService.setOnClickListener {
+            MyJobIntentService.enqueue(this,page++)
         }
     }
 
