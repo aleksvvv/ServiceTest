@@ -44,6 +44,8 @@ class MainActivity : AppCompatActivity() {
                 val jobWorkItem = JobWorkItem(MyJobService.newIntent(page++))
 
                 jobScheduler.enqueue(jobInfo,jobWorkItem)
+            } else{
+                startService(MyIntentService2.newIntent(this,page++))
             }
 
         }

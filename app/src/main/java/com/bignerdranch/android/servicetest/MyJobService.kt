@@ -1,13 +1,9 @@
 package com.bignerdranch.android.servicetest
 
-import android.app.Service
 import android.app.job.JobParameters
 import android.app.job.JobService
-import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.IBinder
-import android.os.PersistableBundle
 import android.util.Log
 import kotlinx.coroutines.*
 
@@ -28,7 +24,7 @@ class MyJobService : JobService() {
                 while (workerItem != null) {
                     val page = workerItem.intent?.getIntExtra(PAGE, 0)
 
-                    for (i in 0..6) {
+                    for (i in 0..4) {
                         delay(1000)
                         log("Timer - $i page: $page")
 
