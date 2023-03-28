@@ -20,6 +20,7 @@ class MyJobService : JobService() {
     }
 
     override fun onStartJob(params: JobParameters?): Boolean {
+        log("onStartJob")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             coroutine.launch {
                 var workerItem = params?.dequeueWork()
