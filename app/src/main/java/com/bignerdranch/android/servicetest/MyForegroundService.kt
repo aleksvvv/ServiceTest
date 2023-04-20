@@ -12,7 +12,15 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.*
 
-class MyForegroundService:Service() {
+class MyForegroundService : Service() {
+
+    private val notificationBuild by lazy {
+        createNotificationBuilder()
+    }
+    private val notificationManager by lazy {
+        getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+    }
+
 
     private val coroutine = CoroutineScope(Dispatchers.Main)
 
@@ -22,22 +30,18 @@ class MyForegroundService:Service() {
 
         createNotificationChannel()
 
-        val notification = createNotification()
-
-        startForeground(ID_NOTIFICATION,notification)
+        startForeground(ID_NOTIFICATION, notificationBuild.build())
     }
 
-    private fun createNotification(): Notification {
-        return NotificationCompat.Builder(this, ID_CHANNEL)
-            .setContentTitle("ForegroundService")
-            .setContentText("ForegroundService")
-            .setSmallIcon(R.drawable.ic_launcher_background)
-            .build()
-    }
+    private fun createNotificationBuilder() = NotificationCompat.Builder(this, ID_CHANNEL)
+        .setContentTitle("ForegroundService")
+        .setContentText("ForegroundService")
+        .setSmallIcon(R.drawable.ic_launcher_background)
+        .setProgress(100, 0, false)
+        .setOnlyAlertOnce(true)
+
 
     private fun createNotificationChannel() {
-        val notificationManager =
-            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
@@ -51,8 +55,11 @@ class MyForegroundService:Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         coroutine.launch {
-            for (i in 0..100) {
+            for (i in 0..100 step 5) {
                 delay(1000)
+                val notification =
+                    notificationBuild.setProgress(100, i, false).build()
+                notificationManager.notify(ID_NOTIFICATION, notification)
                 log(i.toString())
             }
         }

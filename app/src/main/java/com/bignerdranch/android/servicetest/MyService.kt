@@ -16,16 +16,16 @@ class MyService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-coroutine.launch {
+        coroutine.launch {
             for (i in 0..100) {
                 delay(1000)
-            log(i.toString())
+                log(i.toString())
                 stopSelf()
+            }
         }
-}
 
 //        return super.onStartCommand(intent, flags, startId)
-return START_STICKY
+        return START_STICKY
     }
 
     override fun onDestroy() {
